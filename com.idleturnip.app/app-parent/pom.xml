@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.idleturnip.app</groupId>
+    <artifactId>app-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <!-- <altDeploymentRepository></altDeploymentRepository> -->
+        <!-- 注意！！！要先升级各个具体的modules中的version，构建并deploy成功之后，再修改提交本gaf-parent文件中对应的ixxx.version属性。 -->
+        <!-- ibase-commons 代码放在gitlab上. -->
+        <idleturnip.version>1.0.1-SNAPSHOT</idleturnip.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.sourceEncoding>UTF-8</project.reporting.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <repo.releases.updatePolicy>interval:30</repo.releases.updatePolicy>
+        <repo.snapshots.updatePolicy>interval:15</repo.snapshots.updatePolicy>
+        <!-- surefire skipTests -->
+        <skipUTs>false</skipUTs>
+        <!-- pitest @sonar -->
+        <sonar.pitest.mode>reuseReport</sonar.pitest.mode>
+        <!-- The destination file for the code coverage report has to be
+            set to the same value in the parent pom and in each module pom. Then JaCoCo
+            will add up information in the same report, so that, it will give the cross-module
+            code coverage. -->
+        <sonar.jacoco.itReportPath>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.itReportPath>
+        <!-- support multilanguages, such as java, javascript, xml see: http://docs.sonarqube.org/display/SONAR/Analyzing+with+Maven#AnalyzingwithMaven-AnalyzingaMulti-languageProject -->
+        <!--<sonar.language>java</sonar.language> -->
+        <sonar.sources>src/main,pom.xml</sonar.sources>
+        <!-- Set the sonar.java.source property to tell PMD which version
+            of Java your source code complies to -->
+        <sonar.java.source>${maven.compiler.source}</sonar.java.source>
+        <sonar.web.file.suffixes>.html,.xhtml,.rhtml,.shtml,.ftl</sonar.web.file.suffixes>
+        <!-- 顺序: web, properties, java(directory) -->
+        <!-- 注意：sonar6.5版本只能读取单行，请不要换行. -->
+        <sonar.exclusions>**/src/main/resources/**/*.js,src/main/resources/**/*.css</sonar.exclusions>
+        <sonar.javascript.lcov.reportPath>target\coverage\total-coverage.dat</sonar.javascript.lcov.reportPath>
+        <!-- <sonar.javascript.lcov.itReportPath></sonar.javascript.lcov.itReportPath> -->
+        <!-- <sonar.javascript.forceZeroCoverage>true</sonar.javascript.forceZeroCoverage> -->
+        <sonar.buildbreaker.skip>true</sonar.buildbreaker.skip>
+        <!-- RandomizedTesting library system properties -->
+        <tests.iters>1</tests.iters>
+        <tests.seed />
+        <!-- 将nightly设置为true，确保这些案例在日常开发时都会被运行。 -->
+        <tests.nightly>true</tests.nightly>
+        <tests.weekly />
+        <tests.awaitsfix />
+        <tests.slow />
+        <plugin.antrun.version>1.8</plugin.antrun.version>
+        <plugin.assembly.version>3.1.0</plugin.assembly.version>
+        <plugin.bundle.version>3.5.0</plugin.bundle.version>
+        <plugin.cargo.version>1.5.1</plugin.cargo.version>
+        <plugin.clean.version>3.1.0</plugin.clean.version>
+        <plugin.clirr.version>2.8</plugin.clirr.version>
+        <plugin.cobertura.version>2.7</plugin.cobertura.version>
+        <plugin.compiler.version>3.7.0</plugin.compiler.version>
+        <plugin.scala.compiler.version>3.2.0</plugin.scala.compiler.version>
+        <plugin.dependency.version>3.1.0</plugin.dependency.version>
+        <plugin.deploy.version>2.8.2</plugin.deploy.version>
+        <plugin.eclipse.version>2.10</plugin.eclipse.version>
+        <plugin.enforcer.version>1.4.1</plugin.enforcer.version>
+        <plugin.exec.version>1.6.0</plugin.exec.version>
+        <!-- //TODO: v2.19.1会导致 ServiceBeanPermissionDAOTest 出现 ThreadLeakError.
+            也许是randomizedtesting不兼容。 -->
+        <!-- v2.19会导致License.connect()方法在win2003系统下挂起，但v2.19.1, v2.18.1 都不会。 -->
+        <plugin.failsafe.version>2.21.0</plugin.failsafe.version>
+        <plugin.forbiddenapis.version>2.5</plugin.forbiddenapis.version>
+        <plugin.frontend.version>1.6</plugin.frontend.version>
+        <plugin.install.version>2.5.2</plugin.install.version>
+        <!-- Sonar Java Plugin is compatible with JaCoCo 0.7.5 starting from
+            Java Plugin 3.4. -->
+        <!-- 0.7.5.201505241946会导致sonar某些版本出现：java.io.IOException: Incompatible
+            version 1007 -->
+        <plugin.jacoco.version>0.8.1</plugin.jacoco.version>
+        <plugin.jar.version>3.1.0</plugin.jar.version>
+        <plugin.jasmine.version>2.2</plugin.jasmine.version>
+        <!-- javadoc unused -->
+        <plugin.javadoc.version>3.0.0</plugin.javadoc.version><!-- unused -->
+        <plugin.jetty-mortbay.version>8.1.16.v20140903</plugin.jetty-mortbay.version>
+        <!-- jmeter unused -->
+        <plugin.jmeter.version>1.10.1</plugin.jmeter.version>
+        <plugin.native2ascii.version>2.0.1</plugin.native2ascii.version>
+        <!-- pitest unused -->
+        <plugin.pitest.version>1.4.0</plugin.pitest.version>
+        <plugin.proguard.version>2.0.14</plugin.proguard.version>
+        <plugin.project-info-reports.version>2.9</plugin.project-info-reports.version>
+        <plugin.remote-resources.version>1.5</plugin.remote-resources.version>
+        <!-- unused -->
+        <plugin.resources.version>3.1.0</plugin.resources.version>
+        <plugin.selenium.version>2.3</plugin.selenium.version>
+        <!-- used in iclient-android -->
+        <plugin.shade.version>3.0.0</plugin.shade.version>
+        <!-- unused -->
+        <plugin.site.version>3.7.1</plugin.site.version>
+        <!-- From maven-sonar-plugin 3.1, Maven < 3.0 is no longer supported. -->
+        <!-- https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+Maven -->
+        <plugin.sonar.version>3.4.0.905</plugin.sonar.version>
+        <plugin.surefire.version>${plugin.failsafe.version}</plugin.surefire.version>
+        <!-- 2.14,2.15 写入的xml实际编码不是utf-8 -->
+        <plugin.tomcat.version>2.2</plugin.tomcat.version>
+        <plugin.war.version>3.2.1</plugin.war.version>
+        <!-- Akka 2.4.14 (Scala 2.11, 2.12 and Java 8+) -->
+        <akka24.version>2.4.14</akka24.version>
+        <akka23.version>2.3.16</akka23.version>
+        <akka.version>${akka23.version}</akka.version>
+        <aliyun-core.version>3.7.1</aliyun-core.version>
+        <aliyun-dysms.version>1.1.0</aliyun-dysms.version>
+        <aliyun-oss.version>3.1.0</aliyun-oss.version>
+        <aliyun-ots.version>2.2.5</aliyun-ots.version>
+        <aliyun-sdk-oss.version>${aliyun-oss.version}</aliyun-sdk-oss.version>
+        <ant.version>1.10.3</ant.version>
+        <apache-poi.version>3.17</apache-poi.version>
+        <!-- 1.6 for java6, 1.7 for java7, 1.8 for java8, 1.9 for java9 -->
+        <aspectj.version>1.8.13</aspectj.version>
+        <!-- AssertJ 2.x requires Java 7 or higher (use the org.assertj.core.api.Java6Assertions
+            entry point on Android) AssertJ 3.x requires Java 8 or higher (use the org.assertj.core.api.Java6Assertions
+            entry point on Android) -->
+        <!-- //TODO: assertj 2.x/3.x和1.x的API有区别 -->
+        <assertj.version>1.7.1</assertj.version>
+        <axis2.version>1.7.6</axis2.version>
+        <antisamy.version>1.5.7</antisamy.version>
+        <bson4jasckson.version>2.9.0</bson4jasckson.version>
+        <c3p0.version>0.9.5.2</c3p0.version>
+        <cal10n.version>0.8.1</cal10n.version>
+        <cas-client.version>3.5.0</cas-client.version>
+        <cglib.version>3.2.6</cglib.version>
+        <commons-beanutils.version>1.9.3</commons-beanutils.version>
+        <commons-cli.version>1.4</commons-cli.version>
+        <commons-codec.version>1.11</commons-codec.version>
+        <commons-collections.version>3.2.2</commons-collections.version>
+        <commons-collections4.version>4.1</commons-collections4.version>
+        <commons-compress.version>1.16.1</commons-compress.version>
+        <commons-configuration2.version>2.1</commons-configuration2.version>
+        <commons-configuration.version>1.10</commons-configuration.version>
+        <commons-dbcp.version>1.4</commons-dbcp.version>
+        <commons-digester.version>2.1</commons-digester.version>
+        <commons-digester3.version>3.2</commons-digester3.version>
+        <commons-email.version>1.5</commons-email.version>
+        <commons-exec.version>1.3</commons-exec.version>
+        <commons-fileupload.version>1.3.3</commons-fileupload.version>
+        <commons-io.version>2.6</commons-io.version>
+        <commons-lang3.version>3.7</commons-lang3.version>
+        <commons-logging.version>1.2</commons-logging.version>
+        <commons-net.version>3.6</commons-net.version>
+        <commons-pool2.version>2.5.0</commons-pool2.version>
+        <commons-text.version>1.3</commons-text.version>
+        <couchbase.version>1.1.0</couchbase.version>
+        <cxf.version>2.7.8</cxf.version>
+        <cxf-rt-transports-http-osgi.version>2.3.11</cxf-rt-transports-http-osgi.version>
+        <disruptor.version>2.10.4</disruptor.version>
+        <docker-java.version>3.0.13</docker-java.version>
+        <ehcache.version>2.10.5</ehcache.version>
+        <ehcache.server.version>1.0.0</ehcache.server.version>
+        <ehcache.web.version>2.0.4</ehcache.web.version>
+        <ehcache.debugger.version>1.7.1</ehcache.debugger.version>
+        <ehcache3.version>3.5.2</ehcache3.version>
+        <ezmorph.version>1.0.6</ezmorph.version>
+        <!-- https://www.elastic.co/guide/en/elasticsearch/client/java-api/current/java-api.html
+            We plan on deprecating the TransportClient in Elasticsearch 7.0 and removing
+            it completely in 8.0. Instead, you should be using the Java High Level REST
+            Client. -->
+        <elasticsearch.version>6.6.1</elasticsearch.version>
+        <elasticsearch-client.version>6.6.1</elasticsearch-client.version>
+        <expect4j.version>1.6</expect4j.version>
+        <fastjson.version>1.2.47</fastjson.version>
+        <fastjson.android.version>1.1.52.android</fastjson.android.version>
+        <druid.version>1.1.10</druid.version>
+        <!-- https://github.com/FluentLenium/FluentLenium -->
+        <!-- Selenium 3 and Java 8 are required to run it. -->
+        <fluentlenium.version>3.5.2</fluentlenium.version>
+        <freemarker.version>2.3.28</freemarker.version>
+        <genericdao.version>1.2.0</genericdao.version>
+        <geomesa.version>2.2.0</geomesa.version>
+        <!-- geomesa 2.2.0在使用gt20 -->
+        <!-- Java 8 - GeoTools 15.x and above (OpenJDK and Oracle JRE tested)
+            Java 7 - GeoTools 11.x to GeoTools 14.x (OpenJDK and Oracle JRE tested) -->
+        <!-- http://docs.geotools.org/stable/userguide/welcome/upgrade.html
+            http://docs.geotools.org/latest/userguide/build/install/jdk.html -->
+        <!-- GeoTools 12.0 now requires Java 7 and this is the first release
+            tested with OpenJDK! geoPackage实现需要gt11.1版本及以上 -->
+        <!-- geoPackage实现需要gt11.1版本及以上 -->
+        <geotools.version>20.0</geotools.version>
+        <geotrellis.version>2.1.0</geotrellis.version>
+        <glassfish.version>3.1.1</glassfish.version>
+        <gp.version>[7.2.0-12723,8.0)</gp.version>
+        <graphql-java.version>8.0</graphql-java.version>
+        <greenmail.version>1.5.6</greenmail.version>
+        <grizzly2.version>2.4.0</grizzly2.version>
+        <grizzly1.version>1.9.57</grizzly1.version>
+        <gson.version>2.8.5</gson.version>
+        <gt.wfs.version>16.2</gt.wfs.version>
+        <!-- https://github.com/google/guava/wiki/Release20 -->
+        <!-- https://github.com/google/guava -->
+        <!-- Guava 23.x包含两个交付件-jre, -android. 此处写-前面的版本号即可。 -->
+        <guava.version>25.1</guava.version>
+        <guava-retrying.version>2.0.0</guava-retrying.version>
+        <!-- //TODO: geomesa-hbase-datastore依赖的版本是2.6.1，3.3.1版本的protobuf会导致构造HBaseDataStore抛类加载异常 -->
+        <protobuf.version>2.6.1</protobuf.version>
+        <guice.version>4.2.0</guice.version>
+        <gwc.version>1.13.0</gwc.version>
+        <h2.version>1.4.197</h2.version>
+        <!-- geomesa, bdt等都还在使用2.x的hadoop，先不升级到3.x -->
+        <hadoop.version>2.7.6</hadoop.version>
+        <hadoop3.version>3.1.0</hadoop3.version>
+        <hamcrest.version>1.3</hamcrest.version>
+        <hazelcast.version>3.9.1</hazelcast.version>
+        <hazelcast.monitor.version>1.9.3.4</hazelcast.monitor.version>
+        <hbase.version>1.4.4</hbase.version>
+        <hessian.version>4.0.51</hessian.version>
+        <hibernate.version>5.2.12.Final</hibernate.version>
+        <hibernate.validator.version>6.0.13.Final</hibernate.validator.version>
+        <httpasyncclient.version>4.1.3</httpasyncclient.version>
+        <httpcore.version>4.4.9</httpcore.version>
+        <httpclient42.version>4.2.6</httpclient42.version>
+        <httpclient43.version>4.3.6</httpclient43.version>
+        <httpclient44.version>4.4.1</httpclient44.version>
+        <httpclient45.version>4.5.5</httpclient45.version>
+        <!-- httpClient依赖到httpcore，一般来说httpClient的版本需要和httpcore版本一致 -->
+        <httpclient.version>${httpclient45.version}</httpclient.version>
+        <im4java.version>1.4.0</im4java.version>
+        <imageio-ext-png.version>1.1.17</imageio-ext-png.version>
+        <infinispan.version>9.0.0.Final</infinispan.version>
+        <!-- ini4j 0.5.4版本由于变更了对\的处理，会导致安全相关的IT失败. -->
+        <ini4j.version>0.5.2</ini4j.version>
+        <j2ssh.version>0.2.9</j2ssh.version>
+        <java-websocket.version>1.3.5</java-websocket.version>
+        <!-- Starting with 2.7, JDK baseline will be Java 7 / JDK 7 -->
+        <jackson.version>2.9.5</jackson.version>
+        <jackson-annotations.version>${jackson.version}</jackson-annotations.version>
+        <jackson-csv.version>${jackson.version}</jackson-csv.version>
+        <jasmine.version>${plugin.jasmine.version}</jasmine.version>
+        <jasmine-coverage.version>1.5.5</jasmine-coverage.version>
+        <jasypt.version>1.9.2</jasypt.version>
+        <jax-rs1.version>1.1.1</jax-rs1.version>
+        <!-- //TODO: rs-api最新版本为2.1 -->
+        <jax-rs2.version>2.1</jax-rs2.version>
+        <!-- 2.2.8 或以上的版本会导致JAXBToolsTest运行时出现java.lang.NoClassDefFoundError:
+            com/sun/xml/bind/v2/model/annotation/AnnotationReader错误. -->
+        <jaxbimpl.version>2.2.7</jaxbimpl.version>
+        <jaxen.version>1.1.6</jaxen.version>
+        <jedis.version>2.9.0</jedis.version>
+        <jersey.version>1.19.4</jersey.version>
+        <!-- //TODO: jersey 2.26+依赖rs-api 2.1版本，我们在用的是2.0。 -->
+        <jersey2.version>2.26</jersey2.version>
+        <jettison.version>1.4.0</jettison.version>
+        <!-- jetty93/94 需要 java8 环境 -->
+        <jetty94.version>9.4.8.v20171121</jetty94.version>
+        <jetty93.version>9.3.14.v20161028</jetty93.version>
+        <jetty9.version>${jetty94.version}</jetty9.version>
+        <!-- jetty92 和 jetty8 的API有较大变化，且需要 java 7 环境 -->
+        <jetty92.version>9.2.24.v20180105</jetty92.version>
+        <!-- Jetty 7 and Jetty 8 are now EOL (End of Life) -->
+        <jetty8.version>8.2.0.v20160908</jetty8.version>
+        <jetty7.version>7.6.17.v20150415</jetty7.version>
+        <jetty6.version>6.1.26</jetty6.version>
+        <!-- jetty92只有ServerConnector, 和jetty8不兼容. -->
+        <!-- 最终使用时，以jetty.version这个属性的值为准 -->
+        <jetty.version>${jetty8.version}</jetty.version>
+        <jmagick.version>6.6.9</jmagick.version>
+        <jongo.version>0.2</jongo.version>
+        <jose4j.version>0.6.3</jose4j.version>
+        <jsoup.version>1.11.3</jsoup.version>
+        <json-api.version>1.1.2</json-api.version> <!-- JSR 374 (JSON Processing) API -->
+        <json-lib.version>2.4</json-lib.version>
+        <jsonassert.version>1.5.0</jsonassert.version>
+        <jstl.version>1.2</jstl.version>
+        <jts-old.version>1.13</jts-old.version> <!-- 要逐步废弃，改为使用 locationtech-jts包. -->
+        <jts-locationtech.version>1.16.0</jts-locationtech.version>
+        <junit.version>4.12</junit.version>
+        <!-- jwebunit 3.3 October 08, 2015 HtmlUnit 2.18, Java 7 -->
+        <jwebunit.version>3.3</jwebunit.version>
+        <jwt.version>5.10</jwt.version>
+        <log4j.version>1.2.17</log4j.version>
+        <!-- As of version 2.9.1 Log4j supports Java 9 but will still work
+            in Java 7 or 8 -->
+        <logging.log4j.api.version>2.8.2</logging.log4j.api.version>
+        <logback.version>1.2.3</logback.version> <!--不要使用，logback 和 log4j 只能二选一。 -->
+        <!-- lucene 7基于java8 (出处：http://lucene.apache.org/core/7_6_0/SYSTEM_REQUIREMENTS.html) -->
+        <!-- es-transport客户端依赖es包，es 6.6.1 在代码里面明确要求使用 lucene 7.6.0 -->
+        <lucene.version>7.6.0</lucene.version> <!-- latest 7.7.1 -->
+        <!-- mariadb needs Java 7 or 8 (Last compatible version with Java
+            6 is 1.1.9) -->
+        <mariadb-java-client.version>2.2.6</mariadb-java-client.version>
+        <!-- memcached unused -->
+        <memcached.version>2.12.3</memcached.version>
+        <mimepull.version>1.9.7</mimepull.version>
+        <!-- Mockito 3.X will target Java 8 -->
+        <!-- Mockito does not produce the mockito-all artifact anymore -->
+        <!-- https://github.com/mockito/mockito/wiki/What%27s-new-in-Mockito-2 -->
+        <mockito2.version>2.18.3</mockito2.version>
+        <mockito.version>1.10.19</mockito.version>
+        <!-- mongo2 -->
+        <mongo2>2.12.2</mongo2>
+        <mongo3.version>3.6.2</mongo3.version>
+        <mongo.version>${mongo3.version}</mongo.version>
+        <moco.version>0.12.0</moco.version>
+        <!--moco依赖的netty版本，因为在agent模块中有netty版本冲突导致测试失败，故声明依赖的netty版本以解决测试问题 -->
+        <moco.dependecy.netty.version>4.1.19.Final</moco.dependecy.netty.version>
+        <!--mapbox-vector-tile.jar 需要依赖3.0.0版本的protoBuf,但是当前因为3.0.0版本的protoBuf和geomesa有冲突，必须降级到2.6.1,所以对3.0.0版本的mapbox-vector-tile.jar进行修改以适配2.6.1版本的protoBuf，后面升级protoBuf版本后去掉-pb2即可 -->
+        <mvt.version>3.0.0-pb2-v1</mvt.version>
+        <mybatis.version>3.4.6</mybatis.version>
+        <mybatis-spring.version>1.3.2</mybatis-spring.version>
+        <!-- <mysql-connector.version>5.1.38</mysql-connector.version> --><!-- 不要使用， GPL协议！ -->
+        <nutz.version>1.r.65</nutz.version>
+        <!-- 1.1.0 的有问题，会导致重复类型加载。ahnan. -->
+        <ogcs.version>1.0.3</ogcs.version>
+        <wfs200.version>2.0.0</wfs200.version>
+        <!-- shiro-cas 使用1.1，所以这里不更新到2.x版本。 -->
+        <opensaml.version>1.1</opensaml.version>
+        <!-- pac4j 相关依赖 start -->
+        <buji-pac4j.version>4.0.0</buji-pac4j.version>
+        <openstack4j.version>3.1.0</openstack4j.version>
+        <pac4j.version>3.3.0</pac4j.version>
+        <!-- pac4j 相关依赖 end -->
+        <perf4j.version>0.9.16</perf4j.version>
+        <phantomjsdriver.version>1.4.4</phantomjsdriver.version>
+        <pngj.version>2.1.0</pngj.version>
+        <postgresql.version>42.2.2.jre7</postgresql.version>
+        <!-- //todo: powermock 1.6.6+ 和 mockito2 兼容，但和 mockito1 不兼容。 latest:1.7.4 -->
+        <powermock.version>1.6.5</powermock.version>
+        <proguard.version>6.0.3</proguard.version>
+        <quartz.version>2.3.0</quartz.version>
+        <quartz-addon.version>2.1.7</quartz-addon.version>
+        <rabbitmq.version>5.2.0</rabbitmq.version>
+        <!-- randomizedtesting, since 2.2.0 Move to Java 1.7 and use the
+            java NIO 2 API for temp files -->
+        <randomizedtesting.version>2.6.1</randomizedtesting.version>
+        <rest-assured.version>2.9.0</rest-assured.version>
+        <!-- //TODO: You should place rest-assured before the JUnit dependency
+            declaration in your pom.xml / build.gradle in order to make sure that the
+            correct version of Hamcrest is used -->
+        <rest-assured3.version>3.1.0</rest-assured3.version>
+        <!-- //TODO: restlet 2.3.x use java 7, 且API和当前我们所用的2.1,2.2不兼容，暂不升级 -->
+        <restlet.version>2.2.3</restlet.version>
+        <scalatest.version>3.0.5</scalatest.version>
+        <!-- Note that all Selenium Java artefacts are built with Java 8
+            (mandatory). Those will work with any Java >= 8. -->
+        <selenium.version>3.12.0</selenium.version>
+        <!-- //TODO: shiro 1.4.0 还在使用xmlsec的1.4.3版本 -->
+        <shiro.version>1.4.0</shiro.version>
+        <shiro-freemarker.version>1.0.0</shiro-freemarker.version>
+        <shoal.version>1.6.52</shoal.version>
+        <sigar.version>1.6.4</sigar.version>
+        <simple-xml.version>2.7.1</simple-xml.version>
+        <slf4j.version>1.7.25</slf4j.version>
+        <smiley-http-proxy-servlet.version>1.9</smiley-http-proxy-servlet.version>
+        <spark.version>2.3.2</spark.version>
+        <sparkjava.version>2.7.1</sparkjava.version> <!-- unused -->
+        <!-- geomesa 2.2.0, ElasticSearch 6.6.1 版本的空间查询等，依赖 spatial4j 0.7版本 -->
+        <spatial4j.version>0.7</spatial4j.version> <!-- latesd 0.7 -->
+        <spring.version>5.1.6.RELEASE</spring.version>
+        <!-- srping cloud -->
+        <spring.boot.version>2.1.1.RELEASE</spring.boot.version>
+        <spring.cloud.version>Greenwich.RELEASE</spring.cloud.version>
+        <spring.cloud.kubernetes.version>1.0.1.RELEASE</spring.cloud.kubernetes.version>
+        <!-- 新版本3.2+，把 spring-asm 已经合并到 core 中了。 -->
+        <spring-asm.version>3.1.4.RELEASE</spring-asm.version>
+        <spring.security.version>5.0.5.RELEASE</spring.security.version>
+        <!-- 为保证sqlite在aix上的可用性，版本必须小于3.7.15-M1 -->
+        <sqlite.version.forAIX>3.7.2</sqlite.version.forAIX>
+        <sqlite.version.forlinuxFT1500a>3.7.2</sqlite.version.forlinuxFT1500a>
+        <sqlite.version>3.21.0.1</sqlite.version>
+        <sql-parser.version>1.0.16</sql-parser.version>
+        <sqljdbc4.version>4.0</sqljdbc4.version>
+        <swagger-jersey2-jaxrs.version>1.5.21</swagger-jersey2-jaxrs.version>
+        <ugo.version>[8.0.0-12929,10.0)</ugo.version>
+        <sps.version>0.9-SNAPSHOT</sps.version>
+        <bdt.version>[9.0.1-15411,10.1)</bdt.version>
+        <ugo.platformId />
+        <vertx.version>3.4.0</vertx.version>
+        <vertx1.version>1.3.1.final</vertx1.version>
+        <!-- 5.x以后就不开源了，建议用yavijava -->
+        <vijava.version>6.0</vijava.version>
+        <webjars.version>0.5</webjars.version>
+        <weld.version>2.0.2.Final</weld.version>
+        <wro4j.version>1.8.0</wro4j.version>
+        <!-- http://www.xmlunit.org/ -->
+        <!-- //TODO: XMLUnit 2.x is a complete rewrite of XMLUnit and actually
+            doesn't share any code with XMLUnit for Java 1.x. -->
+        <xmlunit2.version>2.6.0</xmlunit2.version>
+        <xmlunit.version>1.6</xmlunit.version>
+        <!-- xstream1.4.10有默认java8版本，也有java7版本 -->
+        <xstream.version>1.4.10</xstream.version>
+        <xmemcached.version>2.4.2</xmemcached.version>
+        <xmlsec.version>2.1.1</xmlsec.version>
+        <yavijava.version>6.0.05</yavijava.version>
+        <springboot-mybatis.version>2.0.1</springboot-mybatis.version>
+        <fastDFS.version>1.27-RELEASE</fastDFS.version>
+    </properties>
+    <dependencyManagement>
+        <dependencies>
+            <!--jersey, sun的JAX-RS实现框架 -->
+            <dependency>
+                <groupId>com.sun.jersey</groupId>
+                <artifactId>jersey-core</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey</groupId>
+                <artifactId>jersey-server</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey</groupId>
+                <artifactId>jersey-servlet</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey</groupId>
+                <artifactId>jersey-client</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>${jaxbimpl.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.xml.bind</groupId>
+                        <artifactId>jsr173_api</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey</groupId>
+                <artifactId>jersey-bundle</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey.contribs</groupId>
+                <artifactId>jersey-multipart</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey.contribs</groupId>
+                <artifactId>jersey-spring</artifactId>
+                <version>${jersey.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+</project>
